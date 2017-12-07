@@ -1,14 +1,10 @@
-#f = open("test7", "r")
-f = open("input7", "r")
-
-tuples={}
-big_array={}
-
 class Program:
     def __init__(self, name, weight, sub):
         self.name = name
         self.weight = weight
         self.cum_weight = weight
+        # A leaf is balanced
+        self.balanced = True
 
         # Construct the sub nodes
         self.sub = []
@@ -18,13 +14,9 @@ class Program:
         # Am I balanced?
         if len(self.sub):
             weights = [ x.cum_weight for x in self.sub ]
-            if max(weights) == min(weights):
-                self.balanced = True
-            for i in self.sub:
-                self.cum_weight += i.cum_weight
-        # A leaf is balanced
-        else:
-            self.balanced = True
+            if max(weights) != min(weights):
+                self.balanced = False
+            self.cum_weight += sum(weights)
 
     def find_wrong(self, diff):
         if self.balanced:
@@ -33,6 +25,7 @@ class Program:
         weights = [ x.cum_weight for x in self.sub ]
         possible_wrong = [ i for i in range(len(self.sub)) if weights.count(self.sub[i].cum_weight) == 1 ]
 
+        # Check the understanding of the problem, and the tree's construction
         if len(self.sub) == 2:
             raise Exception("In {}, two unbalanced: {}".format(self.name, weights))
 
@@ -61,6 +54,9 @@ class Program:
 
 
 # Construct a dict with all nodes as tuples: (name, weight, list of sub-nodes)
+#f = open("test7", "r")
+f = open("input7", "r")
+tuples={}
 for i in f.readlines():
     words = i.split()
     name = words[0]
@@ -77,6 +73,7 @@ for i in tuples.keys():
 
 # Now that we have the root, construct the tree
 root = possible_roots[0]
+print(root)
 a = Program(*tuples[root])
 #print(a)
 
