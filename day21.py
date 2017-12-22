@@ -28,14 +28,14 @@ def flip(grid, horiz):
 rules = {}
 for r in f:
     a = r.split("=>")
-    before = a[0].strip().replace('.', '0').replace('#', '1')
-    after = listify(a[1].strip().replace('.', '0').replace('#', '1'))
+    before = a[0].strip()
+    after = listify(a[1].strip())
     for i in range(4):
         rules[before] = after
         rules[flip(before, 1)] = after
         before = rotate(before)
 
-init = "010/001/111"
+init = ".#./..#/###"
 
 def split_image(image):
     grid = listify(image)
@@ -88,4 +88,4 @@ img = init
 for i in range(18):
     img = expand_img(img)
 
-print(img.count('1'))
+print(img.count('#'))
