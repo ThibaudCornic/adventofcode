@@ -3,42 +3,37 @@ f = open("input21", "r")
 import random
 
 def flatten(obj):
-    return '/'.join([''.join(l) for l in obj])
+    return '/'.join(obj)
 
 def listify(obj):
-    r = []
-    for l in obj.split('/'):
-        r.append([i for i in l])
-    return r
+    return obj.split('/')
 
 def rotate(grid):
     obj = grid.split('/')
     size = len(obj)
-    return flatten([ [ l[size-1-i] for l in obj ] for i in range(size) ])
+    return flatten([ ''.join([ l[size-1-i] for l in obj ]) for i in range(size) ])
 
 def flip(grid, horiz):
     obj = listify(grid)
     if horiz:
-        for i in obj:
-            i.reverse()
+        for i in range(len(obj)):
+            obj[i] = ''.join(reversed(obj[i]))
     else:
         obj.reverse()
     return flatten(obj)
 
 rules = {}
 for r in f:
-    a = r.split("=>")
-    before = a[0].strip()
-    after = listify(a[1].strip())
+    before, after = r.strip().split(" => ")
+    after = listify(after)
     for i in range(4):
         rules[before] = after
         rules[flip(before, 1)] = after
         before = rotate(before)
 
-init = ".#./..#/###"
+init = listify(".#./..#/###")
 
-def split_image(image):
-    grid = listify(image)
+def split_image(grid):
     size = len(grid)
     if size%2:
         chunk = 3
@@ -48,37 +43,22 @@ def split_image(image):
     r = []
     for i in range(0, size, chunk):
         for j in range(0, size, chunk):
-            r.append([ l[j:j+chunk] for l in grid[i:i+chunk] ])
+            block = [ l[j:j+chunk] for l in grid[i:i+chunk] ]
+            r.append(rules[flatten(block)])
     return (int(size/chunk), r)
 
 def join_grid(blocks, blocks_per_line):
     size = len(blocks[0])
-    x = 0
-    y = 0
-    r = [[] for i in range(size)]
-    #print("Joining, size is {}, per line is {}, blocks {}".format(size,
-    #    blocks_per_line, blocks))
-    for b in blocks:
-        for i in range(size):
-            r[x+i].extend(b[i])
-        y += 1
-        if y == blocks_per_line and x < (blocks_per_line-1)*size:
-            y = 0
-            x += size
-            r.extend([ [] for l in range(size)])
+    r = []
+    for i in range(blocks_per_line):
+        line = zip(*blocks[i*blocks_per_line:(i+1)*blocks_per_line])
+        r.extend([ "".join(l) for l in line])
     return r
 
 
 def expand_img(image):
-    expanded = []
     blocks_per_line, blocks = split_image(image)
-    
-    for i in blocks:
-        expanded.append(rules[flatten(i)])
-
-    grid = join_grid(expanded, blocks_per_line)
-
-    return flatten(grid)
+    return join_grid(blocks, blocks_per_line)
 
 def print_img(image):
     print(image.replace('/', '\n'))
@@ -88,4 +68,4 @@ img = init
 for i in range(18):
     img = expand_img(img)
 
-print(img.count('#'))
+print(sum([ i.count('#') for i in img]))
