@@ -3,6 +3,7 @@ c = b + 17000
 
 from math import sqrt
 
+# This function has been taken from https://www.codecademy.com/en/forum_questions/5089b82e0c55f002000018ed
 def is_prime(x):
     prime = False
     if x > 1:
