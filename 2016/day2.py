@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+import sys
 
 up    = lambda x, y, pad: (x, y-1) if pad[y-1][x] != " " else (x, y)
 down  = lambda x, y, pad: (x, y+1) if pad[y+1][x] != " " else (x, y)
@@ -29,7 +31,12 @@ keypad1 = [
 ] 
 
 
-with open("input2", "r") as f:
+if __name__ == "__main__":
+    fname = "input2"
+    if len(sys.argv) > 1:
+        fname = sys.argv[1]
+
+with open(fname, "r") as f:
     code = ""
     x, y = (2, 2)
     for l in f:
@@ -39,7 +46,7 @@ with open("input2", "r") as f:
         code += keypad1[y][x]
     print(code)
 
-with open("input2", "r") as f:
+with open(fname, "r") as f:
     code = ""
     x, y = (1, 3)
     for l in f:
