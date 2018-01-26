@@ -8,13 +8,12 @@ if __name__ == "__main__":
         input = bytearray(sys.argv[1], "utf-8")
 
 password1 = ""
-password2 = [ "_" for i in range(8) ]
+password2 = ["_"] * 8
 
 i = 0
-found_part2 = 0
-while found_part2 < 8: # The part1 is always faster to complete
+while "_" in password2: # The part1 is always faster to complete
     hash = md5(input+bytearray([ord(l) for l in str(i)])).hexdigest()
-    if hash[:5] == "00000":
+    if hash.startswith("00000"):
         # part 1
         if len(password1) < 8:
             password1 += hash[5]
@@ -24,7 +23,6 @@ while found_part2 < 8: # The part1 is always faster to complete
         if idx < 8:
             if password2[idx] == "_":
                 password2[idx] = hash[6]
-                found_part2 += 1
 
     i += 1
     # log every million try
